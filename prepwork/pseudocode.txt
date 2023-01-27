@@ -1,0 +1,198 @@
+VARIABLES NEEDED: 
+maxHeightOfScreen = 446 pixels; 
+maxWidthOfScreen = 264 pixels;
+Each pixels size = 23x23 pixels;
+Use extra space for trips or to show upcoming shapes or something idk figure that out later
+A way to know all the colours and shapes of each tetris shape. 
+To track the current blocks on the screen. 
+One for the score
+One for the level 
+
+
+Grid for the blocks to go on is 12X20
+so it will look like this: 0s will mean no block is in that position and 1 will mean th
+that there is a block in that position 
+
+  Y
+  0 0 0 0 0 0 0 0 0 0 0 0 
+  0 0 0 0 0 0 0 0 0 0 0 0 
+  0 0 0 0 0 0 0 0 0 0 0 0 
+  0 0 0 0 0 0 0 0 0 0 0 0 
+  0 0 0 0 0 0 0 0 0 0 0 0 
+  0 0 0 0 0 0 0 0 0 0 0 0 
+  0 0 0 0 0 0 0 0 0 0 0 0 
+  0 0 0 0 0 0 0 0 0 0 0 0 
+  0 0 0 0 0 0 0 0 0 0 0 0 
+  0 0 0 0 0 0 0 0 0 0 0 0 
+  0 0 0 0 0 0 0 0 0 0 0 0 
+  0 0 0 0 0 0 0 0 0 0 0 0 
+  0 0 0 0 0 0 0 0 0 0 0 0 
+  0 0 0 0 0 0 0 0 1 1 0 0 
+  0 0 0 0 0 0 0 0 1 1 0 0 
+  0 0 0 0 0 0 0 0 0 0 0 0 
+  0 0 0 0 0 0 0 0 0 0 0 0 
+  0 0 0 0 0 1 0 0 0 0 0 0 
+  0 0 0 0 0 1 0 1 0 0 0 0 
+  1 0 0 0 0 1 0 1 1 0 0 0
+X 1 1 1 1 0 1 0 1 0 0 0 0 
+
+
+this shows the blocks being 1 and empty space being 0
+
+the actual pixel representation of this array is as follows: 
+011009	034009	057009	080009	103009	126009	149009	172009	195009	218009	241009	264009
+011032	034032	057032	080032	103032	126032	149032	172032	195032	218032	241032	264032
+011055	034055	057055	080055	103055	126055	149055	172055	195055	218055	241055	264055
+011078	034078	057078	080078	103078	126078	149078	172078	195078	218078	241078	264078
+011101	034101	057101	080101	103101	126101	149101	172101	195101	218101	241101	264101
+011124	034124	057124	080124	103124	126124	149124	172124	195124	218124	241124	264124
+011147	034147	057147	080147	103147	126147	149147	172147	195147	218147	241147	264147
+011170	034170	057170	080170	103170	126170	149170	172170	195170	218170	241170	264170
+011193	034193	057193	080193	103193	126193	149193	172193	195193	218193	241193	264193
+011216	034216	057216	080216	103216	126216	149216	172216	195216	228216	242216	264216
+011239	034239	057239	080239	103239	126239	149239	172239	195239	228239	242239	264239
+011262	034262	057262	080262	103262	126262	149262	172262	195262	228262	242262	264262
+011285	034285	057285	080285	103285	126285	149285	172285	195285	228285	242285	264285
+011308	034308	057308	080308	103308	126308	149308	172308	195308	238308	243308	264308
+011331	034331	057331	080331	103331	126331	149331	172331	195331	238331	243331	264331
+011354	034354	057354	080354	103354	126354	149354	172354	195354	238354	243354	264354
+011377	034377	057377	080377	103377	126377	149377	172377	195377	238377	243377	264377
+011400	034400	057400	080400	103400	126400	149400	172400	195400	248400	244400	264400
+011423	034423	057423	080423	103423	126423	149423	172423	195423	248423	244423	264423
+011446	034446	057446	080446	103446	126446	149446	172446	195446	248446	244446	264446
+
+
+X & Y coordinates to start are: 
+startX = 4 
+startY = 0 
+
+Game coordinates array = 2D array that is 20 by 14 to represent the above grid in my
+code.
+
+Each shape is represented in an array as well. Where 0 = no block and 1 = block
+for example:
+[[1,0], [0, 1], [1,1], [2, 1]] creates the T shape.
+
+0 1 0 0
+1 1 1 0
+0 0 0 0
+
+
+
+I need to also have a class for my coords that clones with coord array to 
+matchup with where we want to draw each shape. Done so like this:
+
+class Coordinates {
+    constructor(x,y){
+        this.x = x;
+        this.y = y; 
+    }
+}
+
+
+Creates the coordinate array using for loops and the size of the screen, incrementing
+by the size of each block being 23pixels, and limiting the size of each array by the
+actual size of the rendered canvas. 
+
+Creating Coordinate Array =
+
+    let i = 0, j = 0;
+
+    increments down array:
+    for (let y=9; y <= maxHeightOfScreen; y+= sizeOfEachBlock)
+
+        //increments left to right
+        for(let x=11; x <= maxWidthOfScreen;x+= 23)
+
+            coordinateArray[i][j] = new Coordinates(x,y)
+            i++;
+        
+        For each increment of the 2nd for loop, you need to reset the i axis. 
+        j++; 
+        i=0; 
+    
+
+
+To setup the game screen: 
+
+Firstly need to get the canvas element. 
+Then get the canvas context so it knows where it is in relation to the canvas. 
+Set it's width and height, in example it was 936px by 956px
+Fill the canvas, so its not empty   
+Then draw a rectangle for the play area
+Next we need to make sure the coordinate array is defined and correctly sized. 
+
+
+
+
+How to draw a shape: 
+
+Since shapes are stored in an array, use the for loop for each element,
+since the X and Y coords are stored in the gameboard array as well, you can
+just draw it according to those coordinates, with the fillRect function
+including the size of each block - being 21px.
+
+Deleting a shape: 
+Set the game board array storage of that shape to 0,
+Fill the position of the shape in the canvas with the background colour
+
+
+Create a random shape: 
+Store each shape in an array. 
+Using math.random to select a random element within the array. 
+In the example he also set a random colour, but I will use the index selected
+to know which shape it is, then set the appropriate colour to that shape. 
+E.G long piece is light blue. 
+
+
+
+Handling user input: 
+
+Use an event listener on the keydown event; then cycle through if/switch cases 
+for the WASD keys, then call the appropriate functions for each key.
+
+keycode 65 is left (A)
+will need to adjust the x coord by -1
+
+keycode 68 is right (D)
+will need to adjjust the x coord by +1
+
+keycode 83 is down (S)
+will need to adjust the y coord by +1
+
+
+Collision: 
+Before each user input, it needs to be checked if the next step will collide with
+either a: 
+
+Wall,
+Check if the new X position of the shape is either below 0 or more than 10.
+
+block,
+Check if the new X position of the shape already has a value of 1 in the game board array
+
+Floor
+Check if the new Y position of the shape is more than 16
+
+
+Blocks falling: 
+
+Use a timer that scales with the level variable that will 
+increase the current shapes Y coordinate by 1. 
+For example on level 1, do it every 2 seconds, then maybe
+reduce that time by 0.2 seconds for each level? idk this is a trail
+and error type thing.
+
+Clear line: 
+Each time a block is placed check all of the adjecent blocks
+up to the walls, being X coord 0-10. If their values are 
+all 1 - meaning there is a block in them, change it to 0. Increase the
+score and make all blocks above move down one block (fall). 
+
+Score + Levels: 
+
+Maybe just simple, increase by 100 for each line cleared. Give bonus
+100 points for a tetris. Increase level at 1000 score intervals. Let the
+user win at level 10. 
+
+
