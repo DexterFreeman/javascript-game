@@ -16,4 +16,20 @@ body {
 
 #game-canvas {
   background-color: gray;
+}
+
+button {
+  font-size: 20px;
+  height: 50px;
+  width: 150px;
+  border-radius: 10px;
+  background-color: lightgray;
+}
+
+button:hover {
+  background-color: rgb(233, 233, 233);
+}
+
+button:active {
+  background-color: rgb(247, 247, 247);
 }/*# sourceMappingURL=styles.css.map */

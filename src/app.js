@@ -5,14 +5,14 @@ const sizeOfEachBlock = 23;
 
 let canvas;
 let context; 
-let gameBoardArrHeight = 20;
-let gameBoardArrWidth = 12; 
-let startX = 4; 
-let startY = 0; 
+let gameBoardArrayHeight = 20;
+let gameBoardArrayWidth = 12; 
+let currentShapeX = 4; 
+let currentShapeY = 0; 
 let score = 0;
-let coordinateArray = [...Array(gameBoardArrHeight)].map(e => Array(gameBoardArrWidth).fill(0))
+let coordinateArray = [...Array(gameBoardArrayHeight)].map(e => Array(gameBoardArrayWidth).fill(0))
 let currentShape = [[1,0], [0, 1], [1,1], [2, 1]]
-
+let isGameOver = false; 
 
 //Initialise variable
 let shapesArray = [];
@@ -36,7 +36,7 @@ let shapeColours = ["purple","cyan","orange", "yellow", "blue", "green", "red" ]
 
 
 let currentShapeColour; 
-let gameBoardArray = [...Array(gameBoardArrHeight)].map(e => Array(gameBoardArrWidth).fill(0))
+let gameBoardArray = [...Array(gameBoardArrayHeight)].map(e => Array(gameBoardArrayWidth).fill(0))
 let directions = {
     idle: 0,
     down: 1, 
@@ -123,8 +123,8 @@ const setupCoordinateArray = () => {
 const drawShape = () => {
     for (let index = 0; index < currentShape.length; index++) {
         
-        let x = currentShape[index][0] + startX;
-        let y = currentShape[index][1] + startY;
+        let x = currentShape[index][0] + currentShapeX;
+        let y = currentShape[index][1] + currentShapeY;
 
         gameBoardArray[x][y] = 1;
 
@@ -138,7 +138,31 @@ const drawShape = () => {
 }
 
 const handleKeyPress = (event) => {
+    if(!isGameOver){
+        switch(event.keyCode){
 
+            case 65:
+                console.log("A");
+                //Move left
+                //Can you move left? 
+                //If yes then move the current shape, delete old position and redraw
+                break;
+            case 68:
+                console.log("D");
+                //Move right
+                break;
+            case 83:
+                console.log("S");
+                //Move down
+                break;
+
+            case 87:
+                console.log("W");
+                //Rotate block
+                break;
+
+        }
+    }
 }
 
 
