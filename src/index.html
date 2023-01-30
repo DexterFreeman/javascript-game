@@ -5,19 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Javascript Game</title>
-    <script defer src="app.js"></script>
+   
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Tetris</h1>
+    <h2>Score: <span>0</span></h2>
+    <h2>Level: <span>1</span></h2>
     <canvas id="game-canvas"></canvas>
-    <h2>Score: <span id="numberOfTurns">0</span></h1>
-    <h2>Level: <span id="numberOfTurns">0</span></h1>
-    <div class="controlContainer">
-        <p>Arrow key left: move left</p>
-        <p>Arrow key right: move right</p>
-        <p>Arrow key up: rotate left</p>
-        <p>Arrow key down: rotate down</p>
-    </div>
+    <button>Reset</button>
+    <script defer src="app.js"></script>
 </body>
 </html>

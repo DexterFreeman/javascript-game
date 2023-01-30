@@ -168,11 +168,15 @@ either a:
 Wall,
 Check if the new X position of the shape is either below 0 or more than 10.
 
-block,
-Check if the new X position of the shape already has a value of 1 in the game board array
+Blocks,
+Make a new copy of the piece in the new position
+check the new copy's position is valid. 
+Check the stopped array to see if any blocks are there
+if not then draw new shape
+if yes then stop the shape
 
-Floor
-Check if the new Y position of the shape is more than 16
+Floor,
+Check if the new Y position of the shape is more than 20
 
 
 Blocks falling: 
