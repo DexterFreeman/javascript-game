@@ -42,6 +42,8 @@ let shapeColours = ["purple","cyan","orange", "yellow", "blue", "green", "red" ]
 
 
 let currentShapeColour; 
+let stoppedShapeArray = [...Array(20)].map(e => Array(12).fill(0));
+ 
 let gameBoardArray = [...Array(gameBoardArrayHeight)].map(e => Array(gameBoardArrayWidth).fill(0))
 let directions = {
     idle: 0,
@@ -144,7 +146,7 @@ const drawShape = () => {
 
 const isCollidingWall = () => {
     for (let index = 0; index < currentShape.length; index++) {
-        //Checks for each square in the same
+        //Checks X position for each square in the current shape
         let newShapeX = currentShape[index][0] + currentShapeX;
         if(newShapeX <= 0 && currentDirection === possibleDirections.left){
             console.log("Hitting wall");
@@ -158,6 +160,74 @@ const isCollidingWall = () => {
     
 }
 
+const isCollidingDown = () => {
+    let shapeCopy = currentShape; 
+    let collision = false;
+
+    for (let index = 0; index < shapeCopy.length; index++) {
+        const square = shapeCopy[index];
+        let newShapeX = square[0] + currentShapeX; 
+        let newShapeY = square[1] + currentShapeY; 
+        if(currentDirection === directions.down){
+            newShapeY++; 
+        }
+        if(typeof stoppedShapeArray[newShapeX][newShapeY+1] === 'string'){
+            deleteShape();
+            currentShapeY++; 
+            drawShape(); 
+            collision = true; 
+            break;
+        }
+        else if (newShapeY >= 20){
+            collision = true;
+            break;
+        }    
+    }
+    if(collision){
+        console.log("Collision down");
+        if(hasUserLost(currentShapeY)){
+            winOrLose = "Game Over";
+            alert("Game over")
+            handleButtonPress();
+        }
+        else {
+            for(let i = 0; i < shapeCopy.length; i++){
+                let square = shapeCopy[i];
+                let x = square[0] + currentShapeX;
+                let y = square[1] + currentShapeY;
+                // Add the current Tetromino color
+                stoppedShapeArray[x][y] = currentShapeColour;
+            }
+            createShape(); 
+            currentDirection = directions.idle; 
+            currentShapeX = 4;
+            currentShapeY = 0; 
+            drawShape(); 
+        }
+
+    }
+
+
+}
+
+
+const hasUserLost = (yCoordinate) => {
+    if(yCoordinate <= 2){
+        return true; 
+    }
+    return false; 
+}
+
+const MoveTetrominoDown = () => {
+    currentDirection = directions.down;
+ 
+    //Check for a vertical collision, either with floor or the wall
+    if(!isCollidingDown()){
+        deleteShape();
+        currentShapeY++;
+        drawShape();
+    }
+}
 
 
 const handleKeyPress = (event) => {
@@ -190,10 +260,7 @@ const handleKeyPress = (event) => {
                 break;
             case 83:
                 console.log("S");
-                currentDirection = possibleDirections.down;
-                deleteShape(); 
-                currentShapeY++; 
-                drawShape(); 
+                MoveTetrominoDown();
                 //Move down
                 break;
 
