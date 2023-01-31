@@ -19,7 +19,9 @@ const possibleDirections = {
     left: 2, 
     right: 3, 
 }
+
 let currentDirection = possibleDirections.idle;
+
 //Initialise variable
 const shapesArray = [[[1,0], [0,1], [1,1], [2,1]], [[0,0], [1,0], [2,0], [3,0]],[[0,0], [0,1], [1,1], [2,1]], [[0,0], [1,0], [0,1], [1,1]],[[2,0], [0,1], [1,1], [2,1]], [[1,0], [2,0], [0,1], [1,1]], [[0,0], [1,0], [1,1], [2,1]] ];
 
@@ -137,10 +139,12 @@ const isCollidingWall = () => {
     for (let index = 0; index < currentShape.length; index++) {
         //Checks X position for each square in the current shape
         let newShapeX = currentShape[index][0] + currentShapeX;
-        if(newShapeX <= 0 && currentDirection === possibleDirections.left){
+        let newShapeY = currentShape[index][1] + currentShapeY; 
+        console.log(newShapeX, newShapeY);
+        if((newShapeX <= 0 || typeof(stoppedShapeArray[newShapeX-1][newShapeY]) === 'string')&& currentDirection === possibleDirections.left){
             console.log("Hitting wall");
             return true;
-        } else if(newShapeX >= 11 && currentDirection === possibleDirections.right){
+        } else if((newShapeX >= 11 || typeof(stoppedShapeArray[newShapeX+1][newShapeY]) === 'string') && currentDirection === possibleDirections.right){
             console.log("Hitting wall");
             return true;
         }  
@@ -160,10 +164,7 @@ const isCollidingDown = () => {
         if(currentDirection === directions.down){
             newShapeY++; 
         }
-        if(typeof stoppedShapeArray[newShapeX][newShapeY+1] === 'string'){
-            deleteShape();
-            currentShapeY++; 
-            drawShape(); 
+        if(typeof stoppedShapeArray[newShapeX][newShapeY] === 'string'){
             collision = true; 
             break;
         }
