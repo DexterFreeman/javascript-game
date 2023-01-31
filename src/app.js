@@ -297,6 +297,17 @@ const handleButtonPress = () => {
     startGame(); 
 }
 
+
+//regulary moves the current block down if the game isn't over. 
+window.setInterval(() => {
+    if(isGameOver != "Game Over"){
+        MoveTetrominoDown();
+    }
+  }, 2000);
+ 
+
+
+
 resetButton.addEventListener('click', handleButtonPress)
 document.addEventListener('keydown', handleKeyPress);
 
