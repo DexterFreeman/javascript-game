@@ -142,6 +142,24 @@ const drawShape = () => {
     }
 }
 
+const isCollidingWall = () => {
+    for (let index = 0; index < currentShape.length; index++) {
+        //Checks for each square in the same
+        let newShapeX = currentShape[index][0] + currentShapeX;
+        if(newShapeX <= 0 && currentDirection === possibleDirections.left){
+            console.log("Hitting wall");
+            return true;
+        } else if(newShapeX >= 11 && currentDirection === possibleDirections.right){
+            console.log("Hitting wall");
+            return true;
+        }  
+    }
+    return false; 
+    
+}
+
+
+
 const handleKeyPress = (event) => {
     if(!isGameOver){
         switch(event.keyCode){
@@ -149,9 +167,12 @@ const handleKeyPress = (event) => {
             case 65:
                 console.log("A");
                 currentDirection = possibleDirections.left;
-                deleteShape(); 
-                currentShapeX--;
-                drawShape(); 
+                if(!isCollidingWall()){
+                    deleteShape(); 
+                    currentShapeX--;
+                    drawShape(); 
+                }
+              
                 //Move left
                 //Can you move left? 
                 //If yes then move the current shape, delete old position and redraw
@@ -159,9 +180,12 @@ const handleKeyPress = (event) => {
             case 68:
                 console.log("D");
                 currentDirection = possibleDirections.right;
-                deleteShape();
-                currentShapeX++;
-                drawShape(); 
+                if(!isCollidingWall()){
+                    deleteShape();
+                    currentShapeX++;
+                    drawShape(); 
+                }
+                
                 //Move right
                 break;
             case 83:
@@ -183,6 +207,8 @@ const handleKeyPress = (event) => {
 }
 
 
+
+
 const deleteShape = () => {
     //Fills current shape with gray to remove it from the canvas. 
     for (let index = 0; index < currentShape.length; index++) {
@@ -202,10 +228,11 @@ const deleteShape = () => {
 }
 
 const handleButtonPress = () => {
-    
     deleteShape(); 
-
+    currentShapeX = 4; 
+    currentShapeY = 0; 
     //Reset arrays and current shape
+    
     currentShape = [[1,0], [0, 1], [1,1], [2, 1]]
     gameBoardArray = [...Array(gameBoardArrayHeight)].map(e => Array(gameBoardArrayWidth).fill(0))
     coordinateArray = [...Array(gameBoardArrayHeight)].map(e => Array(gameBoardArrayWidth).fill(0))
