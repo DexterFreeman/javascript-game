@@ -200,3 +200,8 @@ Maybe just simple, increase by 100 for each line cleared. Give bonus
 user win at level 10. 
 
 
+How to rotate: 
+
+
+
+
