@@ -149,6 +149,9 @@ const handleKeyPress = (event) => {
             case 65:
                 console.log("A");
                 currentDirection = possibleDirections.left;
+                deleteShape(); 
+                currentShapeX--;
+                drawShape(); 
                 //Move left
                 //Can you move left? 
                 //If yes then move the current shape, delete old position and redraw
@@ -156,11 +159,17 @@ const handleKeyPress = (event) => {
             case 68:
                 console.log("D");
                 currentDirection = possibleDirections.right;
+                deleteShape();
+                currentShapeX++;
+                drawShape(); 
                 //Move right
                 break;
             case 83:
                 console.log("S");
                 currentDirection = possibleDirections.down;
+                deleteShape(); 
+                currentShapeY++; 
+                drawShape(); 
                 //Move down
                 break;
 
@@ -174,8 +183,8 @@ const handleKeyPress = (event) => {
 }
 
 
-const handleButtonPress = () => {
-    //Fills current shape with gray to remove it from visible screen. 
+const deleteShape = () => {
+    //Fills current shape with gray to remove it from the canvas. 
     for (let index = 0; index < currentShape.length; index++) {
         
         let x = currentShape[index][0] + currentShapeX;
@@ -190,6 +199,11 @@ const handleButtonPress = () => {
         context.fillRect(coordX, coordY, 21, 21);
         
     }
+}
+
+const handleButtonPress = () => {
+    
+    deleteShape(); 
 
     //Reset arrays and current shape
     currentShape = [[1,0], [0, 1], [1,1], [2, 1]]
