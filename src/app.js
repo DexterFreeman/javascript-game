@@ -1,8 +1,6 @@
 
-const maxHeightOfScreen = 446; 
-const maxWidthOfScreen = 264;
-const sizeOfEachBlock = 23;
-
+const resetButton = document.querySelector(".game__resetButton");
+console.log(resetButton);
 let canvas;
 let context; 
 let gameBoardArrayHeight = 20;
@@ -14,6 +12,14 @@ let coordinateArray = [...Array(gameBoardArrayHeight)].map(e => Array(gameBoardA
 let currentShape = [[1,0], [0, 1], [1,1], [2, 1]]
 let isGameOver = false; 
 
+//Object to track the current direction the block is moving
+const possibleDirections = {
+    idle: 0, 
+    down: 1, 
+    left: 2, 
+    right: 3, 
+}
+let currentDirection = possibleDirections.idle;
 //Initialise variable
 let shapesArray = [];
 // Push T 
@@ -86,7 +92,6 @@ const setupCanvas = () => {
 
     context.strokeStyle = "black";
     context.strokeRect(8, 8, 280, 462);
-
     startGame(); 
 
 
@@ -143,16 +148,19 @@ const handleKeyPress = (event) => {
 
             case 65:
                 console.log("A");
+                currentDirection = possibleDirections.left;
                 //Move left
                 //Can you move left? 
                 //If yes then move the current shape, delete old position and redraw
                 break;
             case 68:
                 console.log("D");
+                currentDirection = possibleDirections.right;
                 //Move right
                 break;
             case 83:
                 console.log("S");
+                currentDirection = possibleDirections.down;
                 //Move down
                 break;
 
@@ -166,5 +174,32 @@ const handleKeyPress = (event) => {
 }
 
 
+const handleButtonPress = () => {
+    //Fills current shape with gray to remove it from visible screen. 
+    for (let index = 0; index < currentShape.length; index++) {
+        
+        let x = currentShape[index][0] + currentShapeX;
+        let y = currentShape[index][1] + currentShapeY;
+
+        gameBoardArray[x][y] = 1;
+
+        let coordX = coordinateArray[x][y].x; 
+        let coordY = coordinateArray[x][y].y; 
+
+        context.fillStyle = "lightgray"; 
+        context.fillRect(coordX, coordY, 21, 21);
+        
+    }
+
+    //Reset arrays and current shape
+    currentShape = [[1,0], [0, 1], [1,1], [2, 1]]
+    gameBoardArray = [...Array(gameBoardArrayHeight)].map(e => Array(gameBoardArrayWidth).fill(0))
+    coordinateArray = [...Array(gameBoardArrayHeight)].map(e => Array(gameBoardArrayWidth).fill(0))
+    
+    startGame(); 
+}
+
+resetButton.addEventListener('click', handleButtonPress)
 document.addEventListener('keydown', handleKeyPress);
+
 document.addEventListener('DOMContentLoaded', setupCanvas)
