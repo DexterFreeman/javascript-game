@@ -21,21 +21,8 @@ const possibleDirections = {
 }
 let currentDirection = possibleDirections.idle;
 //Initialise variable
-let shapesArray = [];
-// Push T 
-shapesArray.push([[1,0], [0,1], [1,1], [2,1]]);
-// Push I
-shapesArray.push([[0,0], [1,0], [2,0], [3,0]]);
-// Push J
-shapesArray.push([[0,0], [0,1], [1,1], [2,1]]);
-// Push Square
-shapesArray.push([[0,0], [1,0], [0,1], [1,1]]);
-// Push L 
-shapesArray.push([[2,0], [0,1], [1,1], [2,1]]);
-// Push S
-shapesArray.push([[1,0], [2,0], [0,1], [1,1]]);
-// Push Z
-shapesArray.push([[0,0], [1,0], [1,1], [2,1]]);
+const shapesArray = [[[1,0], [0,1], [1,1], [2,1]], [[0,0], [1,0], [2,0], [3,0]],[[0,0], [0,1], [1,1], [2,1]], [[0,0], [1,0], [0,1], [1,1]],[[2,0], [0,1], [1,1], [2,1]], [[1,0], [2,0], [0,1], [1,1]], [[0,0], [1,0], [1,1], [2,1]] ];
+
 
 //Put in order of corresponding colour to the index of the shapes array, so each shape belongs to the same index of it's mathcing colour. 
 let shapeColours = ["purple","cyan","orange", "yellow", "blue", "green", "red" ]
