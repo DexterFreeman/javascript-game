@@ -101,6 +101,8 @@ const setupCanvas = () => {
 
 
 const startGame = () => {
+    //Deletes shape so if it's a restart, it deleted any current shape
+    deleteShape(); 
     createShape();
     setupCoordinateArray(); 
     drawShape(); 
@@ -300,10 +302,10 @@ const handleButtonPress = () => {
     currentShapeY = 0; 
     //Reset arrays and current shape
     
-    currentShape = [[1,0], [0, 1], [1,1], [2, 1]]
     gameBoardArray = [...Array(gameBoardArrayHeight)].map(e => Array(gameBoardArrayWidth).fill(0))
     coordinateArray = [...Array(gameBoardArrayHeight)].map(e => Array(gameBoardArrayWidth).fill(0))
-    
+    stoppedShapeArray = [...Array(20)].map(e => Array(12).fill(0));
+    setupCanvas();
     startGame(); 
 }
 
