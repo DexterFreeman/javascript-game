@@ -1,8 +1,10 @@
 
 const resetButton = document.querySelector(".game__resetButton");
 const pageScore = document.querySelector("#score"); 
-const pageLevel = document.querySelector("#level")
+const pageLevel = document.querySelector("#level");
 
+
+let heldShape = ""; 
 let canvas;
 let context; 
 let gameBoardArrayHeight = 20;
@@ -250,12 +252,36 @@ const handleKeyPress = (event) => {
                 rotateShape(); 
                 break;
 
+
+            case 16: 
+                
+                holdShape(currentShape); 
+                console.log("Hold switched to: " + currentShape)
         }
     }
 }
 
 
-
+const holdShape = () => {
+    if(heldShape == ""){
+        heldShape = currentShape;
+        deleteShape();
+        currentShapeX = 4;
+        currentShapeY = 0; 
+        createShape();
+        drawShape(); 
+    }
+    else{
+        deleteShape(); 
+        let tempShape = heldShape
+        heldShape = currentShape;
+        currentShape = tempShape;
+        currentShapeColour = shapeColours[shapesArray.indexOf(currentShape)]
+        currentShapeX = 4;
+        currentShapeY = 0; 
+        drawShape(); 
+    }
+}
 
 const deleteShape = () => {
     //Fills current shape with gray to remove it from the canvas. 

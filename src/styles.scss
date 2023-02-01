@@ -17,9 +17,7 @@ body{
     text-align: center;
 }
 
-#game-canvas {
-    background-color: gray;
-}
+
 
 button{
     font-size: 20px;
@@ -37,13 +35,13 @@ button:active{
 }
 
 .game__section{
-    width: 60%;
-    height: 80vh;
     display: grid;
-    grid-template-columns: 20% 50% 30%;
-    grid-template-rows: 80% 20%;
+    grid-template-columns: 18% 62% 20%;
+    grid-template-rows: 70% 30%;
+    margin: 0;
     canvas{
-        width: 100%;
+        
+        min-width: 600px;
         border: 2px white solid;
         grid-column-start:2;
         grid-column-end: 2;
@@ -51,9 +49,10 @@ button:active{
         grid-row-end: 2;
     }
     .game__hold{
-        height: 150px;
+        height: 250px;
+
         border-bottom-left-radius: 35px;
-        width: 100%;
+        min-width: 100%;
         background-color: black;
         border: 2px white solid;
         
@@ -66,16 +65,31 @@ button:active{
     }
 
     .game__highscores{
-    
+        display: none;
         border-bottom-right-radius: 75px;
-        height: 500px;
-        width: 100%;
+        min-height: 500px;
+        min-width: 100%;
         background-color: black;
         border: 2px white solid;
         h1{
             background-color: white;
             color: black;
             text-align: left;
+        }
+    }
+
+    .game__information{
+        grid-column-start:1;
+        grid-column-end: 1;
+        grid-row-start: 2;
+        grid-row-end: 2;
+    }
+}
+
+@media screen and (min-width: 1000px) {
+    .game__section{
+        .game__highscores{
+            display: inline;
         }
     }
 }
