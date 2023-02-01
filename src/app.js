@@ -2,6 +2,7 @@
 const resetButton = document.querySelector(".game__resetButton");
 const pageScore = document.querySelector("#score"); 
 const pageLevel = document.querySelector("#level")
+
 let canvas;
 let context; 
 let gameBoardArrayHeight = 20;
@@ -9,10 +10,11 @@ let gameBoardArrayWidth = 12;
 let currentShapeX = 4; 
 let currentShapeY = 0; 
 let score = 0;
+let level = 1; 
 let coordinateArray = [...Array(gameBoardArrayHeight)].map(e => Array(gameBoardArrayWidth).fill(0))
 let currentShape = [[1,0], [0, 1], [1,1], [2, 1]]
 let isGameOver = false; 
-
+let difficultyInterval = setInterval(() => {if(isGameOver != "Game Over"){MoveTetrominoDown();}}, (2000 - (level * 150)));
 //Object to track the current direction the block is moving
 const possibleDirections = {
     idle: 0, 
@@ -276,13 +278,13 @@ const deleteShape = () => {
 const handleButtonPress = () => {
     score = 0;
     level = 1; 
+    setDifficulty(level)
     pageScore.innerHTML = "0"
     pageLevel.innerHTML = "1"
     deleteShape(); 
     currentShapeX = 4; 
     currentShapeY = 0; 
     //Reset arrays and current shape
-    
     gameBoardArray = [...Array(gameBoardArrayHeight)].map(e => Array(gameBoardArrayWidth).fill(0))
     coordinateArray = [...Array(gameBoardArrayHeight)].map(e => Array(gameBoardArrayWidth).fill(0))
     stoppedShapeArray = [...Array(20)].map(e => Array(12).fill(0));
@@ -409,49 +411,58 @@ const moveRowsDown = (rowsToClear, startOfClearing) => {
 
 
 const updateLevel = (score) => {
-    if(score <= 1000){
+    if(score <= 500){
         level = 1; 
+        setDifficulty(level); 
         pageLevel.innerHTML = "1"
           
     }
-    else if (score <= 2000){
+    else if (score <= 1000){
         level = 2; 
+        setDifficulty(level); 
         pageLevel.innerHTML = "2"
       
 
     }
-    else if (score <= 3000){ 
+    else if (score <= 1500){ 
         level = 3; 
+        setDifficulty(level); 
         pageLevel.innerHTML = "3"
      
     }
-    else if (score <= 4000){ 
+    else if (score <= 2000){ 
         level = 4; 
+        setDifficulty(level); 
         pageLevel.innerHTML = "4"
      
     }
-    else if (score <= 5000){ 
+    else if (score <= 2500){ 
         level = 5; 
+        setDifficulty(level); 
         pageLevel.innerHTML = "5"
      
     }
-    else if (score <= 6000){ 
+    else if (score <= 3000){ 
         level = 6; 
+        setDifficulty(level); 
         pageLevel.innerHTML = "6"
      
     }
-    else if (score <= 7000){ 
+    else if (score <= 3500){ 
         level = 7; 
+        setDifficulty(level); 
         pageLevel.innerHTML = "7"
      
     }
-    else if (score <= 8000){ 
+    else if (score <= 4000){ 
         level = 8; 
+        setDifficulty(level); 
         pageLevel.innerHTML = "8"
      
     }
-    else if (score <= 9000){ 
+    else if (score <= 4500){ 
         level = 9; 
+        setDifficulty(level); 
         pageLevel.innerHTML = "9"
      
     }
@@ -460,12 +471,14 @@ const updateLevel = (score) => {
 
 
 }
-//regulary moves the current block down if the game isn't over. 
-window.setInterval(() => {
-    if(isGameOver != "Game Over"){
-        MoveTetrominoDown();
-    }
-  }, (2000 - (score * 100)));
+
+const setDifficulty = (level) => {
+    clearInterval(difficultyInterval)
+    difficultyInterval = setInterval(() => {if(isGameOver != "Game Over"){MoveTetrominoDown();}}, (2000 - (level * 180)));
+    
+}
+
+
  
 
 
