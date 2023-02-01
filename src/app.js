@@ -1,6 +1,7 @@
 
 const resetButton = document.querySelector(".game__resetButton");
-
+const pageScore = document.querySelector("#score"); 
+const pageLevel = document.querySelector("#level")
 let canvas;
 let context; 
 let gameBoardArrayHeight = 20;
@@ -278,6 +279,10 @@ const deleteShape = () => {
 }
 
 const handleButtonPress = () => {
+    score = 0;
+    level = 1; 
+    pageScore.innerHTML = "0"
+    pageLevel.innerHTML = "1"
     deleteShape(); 
     currentShapeX = 4; 
     currentShapeY = 0; 
@@ -371,21 +376,44 @@ const checkAndClearRows = () => {
     }
     if(rowsToClear > 0){
         score += (rowsToClear*100)
-        console.log(score);
-        console.log(rowsToClear)
+        updateLevel(score)
+        pageScore.innerHTML = score; 
     }
 }
 
 
-/*
+const updateLevel = (score) => {
+    if(score <= 1000){
+        console.log("level 1")
+        level = 1; 
+        pageLevel.innerHTML = "1"
+          
+    }
+    else if (score >= 2000){
+        console.log("level 2")
+        level = 2; 
+        pageLevel.innerHTML = "2"
+      
+
+    }
+    else if (score >= 3000){ 
+        level = 3; 
+        pageLevel.innerHTML = "3"
+     
+    }
+           
+    
+
+
+}
 //regulary moves the current block down if the game isn't over. 
 window.setInterval(() => {
     if(isGameOver != "Game Over"){
         MoveTetrominoDown();
     }
-  }, 2000);
+  }, (2000 - (score * 100)));
  
-*/
+
 
 
 resetButton.addEventListener('click', handleButtonPress)
