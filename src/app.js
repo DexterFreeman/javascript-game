@@ -147,7 +147,7 @@ const isCollidingWall = (shape, shapeXCoordinate, shapeYCoordinate) => {
 
 const isCollidingDown = (shape, shapeXCoordinate, shapeYCoordinate) => {
     let shapeCopy = shape; 
-    let collision = false;
+
     for (let index = 0; index < shapeCopy.length; index++) {
         const square = shapeCopy[index];
         let newShapeX = square[0] + shapeXCoordinate; 
@@ -157,41 +157,40 @@ const isCollidingDown = (shape, shapeXCoordinate, shapeYCoordinate) => {
             newShapeY++; 
         }
         if(typeof stoppedShapeArray[newShapeX][newShapeY] === 'string'){
-            collision = true; 
-            break;
+            handleCollisionDown(currentShapeX, currentShapeY, shapeCopy); 
+            return true; 
         }
         else if (newShapeY >= 20){
-            collision = true;
-            break;
+            handleCollisionDown(currentShapeX, currentShapeY, shapeCopy); 
+            return true; 
         }    
-    }
-    if(collision){
-        handleCollisionDown(currentShapeX, currentShapeY, shapeCopy); 
-        return true; 
     }
     return false;
 }
 
 const handleCollisionDown = (shapeXCoordinate, shapeYCoordinate, newShape) => {
-        if(hasUserLost(shapeYCoordinate)){
-            winOrLose = "Game Over";
-            alert("Game over")
-            handleButtonPress();
-        }
-        else {
-            for(let index = 0; index < newShape.length; index++){
-                let square = newShape[index];
-                let x = square[0] + shapeXCoordinate;
-                let y = square[1] + shapeYCoordinate;
+    //Has the user lost?
+    if(hasUserLost(shapeYCoordinate)){
+        winOrLose = "Game Over";
+        alert("Game over")
+        handleButtonPress();
+    }
+    //If not, stop draw the shape, and continue playing.
+    else {
+        for(let index = 0; index < newShape.length; index++){
+            let square = newShape[index];
+            let x = square[0] + shapeXCoordinate;
+            let y = square[1] + shapeYCoordinate;
                 // Add the current Tetromino color
                 stoppedShapeArray[x][y] = currentShapeColour;
             }
-            createShape(); 
-            currentDirection = directions.idle; 
-            currentShapeX = 4;
-            currentShapeY = 0; 
-            drawShape(); 
-        }
+        checkAndClearRows();
+        createShape(); 
+        currentDirection = directions.idle; 
+        currentShapeX = 4;
+        currentShapeY = 0; 
+        drawShape(); 
+    }
 }
 
 const hasUserLost = (yCoordinate) => {
@@ -217,7 +216,7 @@ const handleKeyPress = (event) => {
     if(!isGameOver){
         switch(event.keyCode){
 
-            case 65:
+            case 37:
                 currentDirection = possibleDirections.left;
                 if(!isCollidingWall(currentShape, currentShapeX, currentShapeY)){
                     deleteShape(); 
@@ -230,7 +229,7 @@ const handleKeyPress = (event) => {
                 //If yes then move the current shape, delete old position and redraw
                 break;
 
-            case 68:
+            case 39:
               
                 currentDirection = possibleDirections.right;
                 if(!isCollidingWall(currentShape, currentShapeX, currentShapeY)){
@@ -242,13 +241,13 @@ const handleKeyPress = (event) => {
                 break;
 
 
-            case 83:
+            case 40:
             
                 MoveTetrominoDown();
                 //Move down
                 break;
 
-            case 87:
+            case 38:
                
                 rotateShape(); 
                 break;
@@ -333,6 +332,50 @@ const rotateShape = () => {
         }
     }
 }
+
+const checkAndClearRows = () => {
+    let rowsToClear = 0;
+    let startOfClearing = 0; 
+    for (let index = 0; index < gameBoardArrayHeight; index++) {
+
+        let isRowFull = true; 
+
+        for (let i = 0; i < gameBoardArrayWidth; i++) {
+            let square = stoppedShapeArray[i][index]
+            if (square === 0 || (typeof square === 'undefined')){
+                isRowFull = false; 
+                break
+            }
+            
+        }
+
+        if(isRowFull){
+
+            //If it's the first row to be cleared, set start of clearing to the current row. 
+            if(startOfClearing === 0){
+                startOfClearing = index; 
+            }
+            rowsToClear++; 
+
+            for (let rowIndex = 0; rowIndex < gameBoardArrayWidth; rowIndex++) {
+                stoppedShapeArray[rowIndex][index] = 0;
+                gameBoardArray[rowIndex][index] = 0;
+
+                const coordX = coordinateArray[rowIndex][index].x; 
+                const coordY = coordinateArray[rowIndex][index].y; 
+                context.fillStyle = 'lightgray';
+                context.fillRect(coordX, coordY, 21, 21)
+                
+            }
+        } 
+    }
+    if(rowsToClear > 0){
+        score += (rowsToClear*100)
+        console.log(score);
+        console.log(rowsToClear)
+    }
+}
+
 
 /*
 //regulary moves the current block down if the game isn't over. 
