@@ -145,14 +145,13 @@ const isCollidingWall = (shape, shapeXCoordinate, shapeYCoordinate) => {
     
 }
 
-const isCollidingDown = () => {
-    let shapeCopy = currentShape; 
+const isCollidingDown = (shape, shapeXCoordinate, shapeYCoordinate) => {
+    let shapeCopy = shape; 
     let collision = false;
-
     for (let index = 0; index < shapeCopy.length; index++) {
         const square = shapeCopy[index];
-        let newShapeX = square[0] + currentShapeX; 
-        let newShapeY = square[1] + currentShapeY; 
+        let newShapeX = square[0] + shapeXCoordinate; 
+        let newShapeY = square[1] + shapeYCoordinate; 
 
         if(currentDirection === directions.down){
             newShapeY++; 
@@ -167,17 +166,23 @@ const isCollidingDown = () => {
         }    
     }
     if(collision){
+        handleCollisionDown(currentShapeX, currentShapeY, shapeCopy); 
+        return true; 
+    }
+    return false;
+}
 
-        if(hasUserLost(currentShapeY)){
+const handleCollisionDown = (shapeXCoordinate, shapeYCoordinate, newShape) => {
+        if(hasUserLost(shapeYCoordinate)){
             winOrLose = "Game Over";
             alert("Game over")
             handleButtonPress();
         }
         else {
-            for(let i = 0; i < shapeCopy.length; i++){
-                let square = shapeCopy[i];
-                let x = square[0] + currentShapeX;
-                let y = square[1] + currentShapeY;
+            for(let index = 0; index < newShape.length; index++){
+                let square = newShape[index];
+                let x = square[0] + shapeXCoordinate;
+                let y = square[1] + shapeYCoordinate;
                 // Add the current Tetromino color
                 stoppedShapeArray[x][y] = currentShapeColour;
             }
@@ -187,12 +192,7 @@ const isCollidingDown = () => {
             currentShapeY = 0; 
             drawShape(); 
         }
-
-    }
-
-
 }
-
 
 const hasUserLost = (yCoordinate) => {
     if(yCoordinate <= 2){
@@ -205,7 +205,7 @@ const MoveTetrominoDown = () => {
     currentDirection = directions.down;
  
     //Check for a vertical collision, either with floor or the wall
-    if(!isCollidingDown()){
+    if(!isCollidingDown(currentShape, currentShapeX, currentShapeY)){
         deleteShape();
         currentShapeY++;
         drawShape();
@@ -218,7 +218,6 @@ const handleKeyPress = (event) => {
         switch(event.keyCode){
 
             case 65:
-                console.log(currentShapeY);
                 currentDirection = possibleDirections.left;
                 if(!isCollidingWall(currentShape, currentShapeX, currentShapeY)){
                     deleteShape(); 
