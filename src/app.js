@@ -378,27 +378,83 @@ const checkAndClearRows = () => {
         score += (rowsToClear*100)
         updateLevel(score)
         pageScore.innerHTML = score; 
+        moveRowsDown(rowsToClear, startOfClearing); 
+    }
+}
+
+const moveRowsDown = (rowsToClear, startOfClearing) => {
+    for (let y = startOfClearing-1; y >= 0; y--) {
+        for(let x=0; x < gameBoardArrayWidth; x++){
+            let y2 = y + rowsToClear; 
+            let square = stoppedShapeArray[x][y];
+            let nextSquare = stoppedShapeArray[x][y2];
+            if(typeof square == 'string'){
+                nextSquare = square;
+                gameBoardArray[x][y2] = 1;
+                stoppedShapeArray[x][y2] = square; 
+                let coordX = coordinateArray[x][y2].x; 
+                let coordY = coordinateArray[x][y2].y; 
+                context.fillStyle = nextSquare; 
+                context.fillRect(coordX, coordY, 21, 21);
+                square = 0; 
+                gameBoardArray[x][y] = 0; // Clear the spot in GBA
+                stoppedShapeArray[x][y] = 0; // Clear the spot in SSA
+                coordX = coordinateArray[x][y].x;
+                coordY = coordinateArray[x][y].y;
+                context.fillStyle = 'lightgray'
+                context.fillRect(coordX, coordY, 21 , 21)
+            }
+        }
+        
     }
 }
 
 
 const updateLevel = (score) => {
     if(score <= 1000){
-        console.log("level 1")
         level = 1; 
         pageLevel.innerHTML = "1"
           
     }
-    else if (score >= 2000){
-        console.log("level 2")
+    else if (score <= 2000){
         level = 2; 
         pageLevel.innerHTML = "2"
       
 
     }
-    else if (score >= 3000){ 
+    else if (score <= 3000){ 
         level = 3; 
         pageLevel.innerHTML = "3"
+     
+    }
+    else if (score <= 4000){ 
+        level = 4; 
+        pageLevel.innerHTML = "4"
+     
+    }
+    else if (score <= 5000){ 
+        level = 5; 
+        pageLevel.innerHTML = "5"
+     
+    }
+    else if (score <= 6000){ 
+        level = 6; 
+        pageLevel.innerHTML = "6"
+     
+    }
+    else if (score <= 7000){ 
+        level = 7; 
+        pageLevel.innerHTML = "7"
+     
+    }
+    else if (score <= 8000){ 
+        level = 8; 
+        pageLevel.innerHTML = "8"
+     
+    }
+    else if (score <= 9000){ 
+        level = 9; 
+        pageLevel.innerHTML = "9"
      
     }
            

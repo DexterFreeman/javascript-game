@@ -1,7 +1,10 @@
 * {
   padding: 0;
   margin: 0;
-  background-color: antiquewhite;
+  background-color: black;
+  color: white;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 32px;
 }
 
 body {
@@ -23,7 +26,8 @@ button {
   height: 50px;
   width: 150px;
   border-radius: 10px;
-  background-color: lightgray;
+  background-color: white;
+  color: black;
 }
 
 button:hover {
@@ -32,4 +36,24 @@ button:hover {
 
 button:active {
   background-color: rgb(247, 247, 247);
+}
+
+.game__section {
+  display: flex;
+}
+.game__section canvas {
+  margin-right: 5%;
+  margin-left: 5%;
+}
+.game__section .game__hold {
+  border-radius: 10px;
+  height: 140px;
+  width: 300px;
+  background-color: lightgray;
+}
+.game__section .game__highscores {
+  border-radius: 10px;
+  height: 1000px;
+  width: 50%;
+  background-color: lightgray;
 }/*# sourceMappingURL=styles.css.map */
