@@ -1,6 +1,6 @@
 
 const resetButton = document.querySelector(".game__resetButton");
-console.log(resetButton);
+
 let canvas;
 let context; 
 let gameBoardArrayHeight = 20;
@@ -62,7 +62,6 @@ const createCoordinateArray = () => {
         for(let x=11; x <= maxWidthOfScreen;x+= 23){
             coordinateArray[i][j] = new Coordinates(x,y)
             i++;
-
         }
         j++; 
         i=0; 
@@ -75,17 +74,12 @@ const setupCanvas = () => {
     context = canvas.getContext('2d');
     canvas.width = 592;
     canvas.height = 956;
-
     context.scale(2,2);
-
     context.fillStyle = "lightgray";
     context.fillRect(0,0, canvas.width, canvas.height);
-
     context.strokeStyle = "black";
     context.strokeRect(8, 8, 280, 462);
     startGame(); 
-
-
 }
 
 
@@ -135,17 +129,15 @@ const drawShape = () => {
     }
 }
 
-const isCollidingWall = () => {
-    for (let index = 0; index < currentShape.length; index++) {
+const isCollidingWall = (shape, shapeXCoordinate, shapeYCoordinate) => {
+    for (let index = 0; index < shape.length; index++) {
         //Checks X position for each square in the current shape
-        let newShapeX = currentShape[index][0] + currentShapeX;
-        let newShapeY = currentShape[index][1] + currentShapeY; 
-        console.log(newShapeX, newShapeY);
+        let newShapeX = shape[index][0] + shapeXCoordinate;
+        let newShapeY = shape[index][1] + shapeYCoordinate; 
         if((newShapeX <= 0 || typeof(stoppedShapeArray[newShapeX-1][newShapeY]) === 'string')&& currentDirection === possibleDirections.left){
-            console.log("Hitting wall");
+
             return true;
         } else if((newShapeX >= 11 || typeof(stoppedShapeArray[newShapeX+1][newShapeY]) === 'string') && currentDirection === possibleDirections.right){
-            console.log("Hitting wall");
             return true;
         }  
     }
@@ -161,6 +153,7 @@ const isCollidingDown = () => {
         const square = shapeCopy[index];
         let newShapeX = square[0] + currentShapeX; 
         let newShapeY = square[1] + currentShapeY; 
+
         if(currentDirection === directions.down){
             newShapeY++; 
         }
@@ -174,7 +167,7 @@ const isCollidingDown = () => {
         }    
     }
     if(collision){
-        console.log("Collision down");
+
         if(hasUserLost(currentShapeY)){
             winOrLose = "Game Over";
             alert("Game over")
@@ -225,9 +218,9 @@ const handleKeyPress = (event) => {
         switch(event.keyCode){
 
             case 65:
-                console.log("A");
+                console.log(currentShapeY);
                 currentDirection = possibleDirections.left;
-                if(!isCollidingWall()){
+                if(!isCollidingWall(currentShape, currentShapeX, currentShapeY)){
                     deleteShape(); 
                     currentShapeX--;
                     drawShape(); 
@@ -237,26 +230,28 @@ const handleKeyPress = (event) => {
                 //Can you move left? 
                 //If yes then move the current shape, delete old position and redraw
                 break;
+
             case 68:
-                console.log("D");
+              
                 currentDirection = possibleDirections.right;
-                if(!isCollidingWall()){
+                if(!isCollidingWall(currentShape, currentShapeX, currentShapeY)){
                     deleteShape();
                     currentShapeX++;
                     drawShape(); 
                 }
-                
                 //Move right
                 break;
+
+
             case 83:
-                console.log("S");
+            
                 MoveTetrominoDown();
                 //Move down
                 break;
 
             case 87:
-                console.log("W");
-                //Rotate block
+               
+                rotateShape(); 
                 break;
 
         }
@@ -297,7 +292,50 @@ const handleButtonPress = () => {
     startGame(); 
 }
 
+const getLastSquareX = () => {
+    let lastX = 0; 
+    for (let index = 0; index < currentShape.length; index++) {
+        const square = currentShape[index]; 
+       
+        if(square[0] > lastX){
+            lastX = square[0]
+        }
+        
+    }
 
+    return lastX; 
+}
+
+
+const rotateShape = () => {
+    const newShape = new Array(); 
+    //Shallow copy
+    const shapeCopy = currentShape; 
+    //Deep copy
+    const currentShapeBackup = [...currentShape]; 
+
+    for (let index = 0; index < shapeCopy.length; index++) {
+        const currentSquareX = shapeCopy[index][0];
+        const currentSquareY = shapeCopy[index][1];
+        const newShapeX = (getLastSquareX() - currentSquareY);
+        const newShapeY = currentSquareX; 
+        newShape.push([newShapeX, newShapeY]);
+    }
+    deleteShape(); 
+    try{
+        currentShape = newShape; 
+        drawShape(); 
+    }
+    catch (exception){
+        if (exception instanceof TypeError){
+            currentShape = currentShapeBackup; 
+            deleteShape(); 
+            drawShape(); 
+        }
+    }
+}
+
+/*
 //regulary moves the current block down if the game isn't over. 
 window.setInterval(() => {
     if(isGameOver != "Game Over"){
@@ -305,7 +343,7 @@ window.setInterval(() => {
     }
   }, 2000);
  
-
+*/
 
 
 resetButton.addEventListener('click', handleButtonPress)
