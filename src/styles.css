@@ -1,7 +1,7 @@
 * {
   padding: 0;
   margin: 0;
-  background-color: black;
+  background-color: rgb(88, 88, 88);
   color: white;
   font-family: "Courier New", Courier, monospace;
   font-size: 32px;
@@ -42,18 +42,29 @@ button:active {
   display: flex;
 }
 .game__section canvas {
-  margin-right: 5%;
-  margin-left: 5%;
+  border: 2px white solid;
 }
 .game__section .game__hold {
-  border-radius: 10px;
-  height: 140px;
+  height: 150px;
+  border-bottom-left-radius: 35px;
   width: 300px;
-  background-color: lightgray;
+  background-color: black;
+  border: 2px white solid;
+}
+.game__section .game__hold h1 {
+  background-color: white;
+  color: black;
+  text-align: left;
 }
 .game__section .game__highscores {
-  border-radius: 10px;
-  height: 1000px;
+  border-bottom-right-radius: 75px;
+  height: 500px;
   width: 50%;
-  background-color: lightgray;
+  background-color: black;
+  border: 2px white solid;
+}
+.game__section .game__highscores h1 {
+  background-color: white;
+  color: black;
+  text-align: left;
 }/*# sourceMappingURL=styles.css.map */

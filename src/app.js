@@ -55,31 +55,25 @@ class Coordinates {
 
 
 
-const createCoordinateArray = () => {
-    let i = 0, j = 0;
-    //increments down array
-    for(let y=9; y <= maxHeightOfScreen; y+= sizeOfEachBlock){
-        //increments left to right
-        for(let x=11; x <= maxWidthOfScreen;x+= 23){
-            coordinateArray[i][j] = new Coordinates(x,y)
-            i++;
-        }
-        j++; 
-        i=0; 
-    }
-
-}
-
 const setupCanvas = () => {
     canvas = document.getElementById("game-canvas");
     context = canvas.getContext('2d');
     canvas.width = 592;
     canvas.height = 956;
     context.scale(2,2);
-    context.fillStyle = "lightgray";
+    context.fillStyle = "black";
     context.fillRect(0,0, canvas.width, canvas.height);
-    context.strokeStyle = "black";
-    context.strokeRect(8, 8, 280, 462);
+    context.strokeStyle = "#181819";
+    for (let index = 0; index < gameBoardArrayWidth+1; index++) {
+        context.strokeRect(index*23+9.5,8, 1, 459);
+        
+    }
+   
+    for (let i = 0; i < gameBoardArrayHeight+1; i++) {
+        
+        context.strokeRect(10,i*23+7.5, 276, 1);
+        
+    }
     startGame(); 
 }
 
@@ -107,6 +101,7 @@ const setupCoordinateArray = () => {
         for(let x = 11; x <= 264; x += 23){
             coordinateArray[i][j] = new Coordinates(x,y);
             i++;
+          
         }
         j++;
         i = 0;
@@ -272,7 +267,7 @@ const deleteShape = () => {
         let coordX = coordinateArray[x][y].x; 
         let coordY = coordinateArray[x][y].y; 
 
-        context.fillStyle = "lightgray"; 
+        context.fillStyle = "black"; 
         context.fillRect(coordX, coordY, 21, 21);
         
     }
@@ -368,7 +363,7 @@ const checkAndClearRows = () => {
 
                 const coordX = coordinateArray[rowIndex][index].x; 
                 const coordY = coordinateArray[rowIndex][index].y; 
-                context.fillStyle = 'lightgray';
+                context.fillStyle = 'black';
                 context.fillRect(coordX, coordY, 21, 21)
                 
             }
@@ -384,24 +379,27 @@ const checkAndClearRows = () => {
 
 const moveRowsDown = (rowsToClear, startOfClearing) => {
     for (let y = startOfClearing-1; y >= 0; y--) {
+
         for(let x=0; x < gameBoardArrayWidth; x++){
-            let y2 = y + rowsToClear; 
+
+            let newY = y + rowsToClear; 
             let square = stoppedShapeArray[x][y];
-            let nextSquare = stoppedShapeArray[x][y2];
+            let nextSquare = stoppedShapeArray[x][newY];
+
             if(typeof square == 'string'){
                 nextSquare = square;
-                gameBoardArray[x][y2] = 1;
-                stoppedShapeArray[x][y2] = square; 
-                let coordX = coordinateArray[x][y2].x; 
-                let coordY = coordinateArray[x][y2].y; 
+                gameBoardArray[x][newY] = 1;
+                stoppedShapeArray[x][newY] = square; 
+                let coordX = coordinateArray[x][newY].x; 
+                let coordY = coordinateArray[x][newY].y; 
                 context.fillStyle = nextSquare; 
                 context.fillRect(coordX, coordY, 21, 21);
                 square = 0; 
-                gameBoardArray[x][y] = 0; // Clear the spot in GBA
-                stoppedShapeArray[x][y] = 0; // Clear the spot in SSA
+                gameBoardArray[x][y] = 0; 
+                stoppedShapeArray[x][y] = 0; 
                 coordX = coordinateArray[x][y].x;
                 coordY = coordinateArray[x][y].y;
-                context.fillStyle = 'lightgray'
+                context.fillStyle = 'black'
                 context.fillRect(coordX, coordY, 21 , 21)
             }
         }
