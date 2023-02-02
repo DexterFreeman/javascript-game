@@ -70,6 +70,7 @@ button:active {
 }
 .game__section .game__highscores {
   display: none;
+  overflow: hidden;
   border-bottom-right-radius: 75px;
   min-height: 500px;
   min-width: 100%;
@@ -80,6 +81,9 @@ button:active {
   background-color: white;
   color: black;
   text-align: left;
+}
+.game__section .game__highscores p {
+  background-color: black;
 }
 .game__section .game__information {
   grid-column-start: 1;

@@ -168,8 +168,9 @@ const isCollidingDown = (shape, shapeXCoordinate, shapeYCoordinate) => {
 }
 
 const updateScores = (score) => {
-    highScores.innerHTML = "";
+    highScores.innerHTML = "<h1>Highscores:</h1>";
     allScores.push(score);
+    allScores.reverse();
     allScores.sort();
     allScores.forEach(element => {
         highScores.innerHTML += `<p>${element}</p>`
