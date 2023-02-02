@@ -49,6 +49,10 @@ button:active{
         grid-row-end: 2;
     }
     .game__hold{
+        display: flex;
+        flex-direction: column;
+       
+        justify-content: space-between;
         height: 250px;
 
         border-bottom-left-radius: 35px;
@@ -61,6 +65,12 @@ button:active{
             color: black;
             text-align: left;
             
+        }
+
+        .game__hold-image{
+           margin-left: 5%;
+            margin-bottom: 40%;
+            width: 150px;
         }
     }
 

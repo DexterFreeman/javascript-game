@@ -2,8 +2,8 @@
 const resetButton = document.querySelector(".game__resetButton");
 const pageScore = document.querySelector("#score"); 
 const pageLevel = document.querySelector("#level");
-
-
+const heldShapeRender = document.querySelector(".game__hold");
+const heldImage = document.querySelector(".game__hold-image");
 let heldShape = ""; 
 let canvas;
 let context; 
@@ -28,7 +28,15 @@ const possibleDirections = {
 let currentDirection = possibleDirections.idle;
 
 //Initialise variable
-const shapesArray = [[[1,0], [0,1], [1,1], [2,1]], [[0,0], [1,0], [2,0], [3,0]],[[0,0], [0,1], [1,1], [2,1]], [[0,0], [1,0], [0,1], [1,1]],[[2,0], [0,1], [1,1], [2,1]], [[1,0], [2,0], [0,1], [1,1]], [[0,0], [1,0], [1,1], [2,1]] ];
+const shapesArray = [
+    [[1,0], [0,1], [1,1], [2,1]], 
+    [[0,0], [1,0], [2,0], [3,0]],
+    [[0,0], [0,1], [1,1], [2,1]], 
+    [[0,0], [1,0], [0,1], [1,1]],
+    [[2,0], [0,1], [1,1], [2,1]], 
+    [[1,0], [2,0], [0,1], [1,1]], 
+    [[0,0], [1,0], [1,1], [2,1]] 
+];
 
 
 //Put in order of corresponding colour to the index of the shapes array, so each shape belongs to the same index of it's mathcing colour. 
@@ -213,6 +221,7 @@ const MoveTetrominoDown = () => {
 
 
 const handleKeyPress = (event) => {
+    if(event.keyCode == 16 && event.repeat){return;}
     if(!isGameOver){
         switch(event.keyCode){
 
@@ -254,9 +263,8 @@ const handleKeyPress = (event) => {
 
 
             case 16: 
-                
                 holdShape(currentShape); 
-                console.log("Hold switched to: " + currentShape)
+               
         }
     }
 }
@@ -265,6 +273,7 @@ const handleKeyPress = (event) => {
 const holdShape = () => {
     if(heldShape == ""){
         heldShape = currentShape;
+        renderHeldShape(heldShape); 
         deleteShape();
         currentShapeX = 4;
         currentShapeY = 0; 
@@ -276,10 +285,44 @@ const holdShape = () => {
         let tempShape = heldShape
         heldShape = currentShape;
         currentShape = tempShape;
+        renderHeldShape(heldShape); 
         currentShapeColour = shapeColours[shapesArray.indexOf(currentShape)]
         currentShapeX = 4;
         currentShapeY = 0; 
         drawShape(); 
+    }
+}
+
+
+const renderHeldShape = (shapeToRender) => {
+    switch(shapeToRender){
+        case shapesArray[0]:
+            heldImage.src = "./images/TBlock.png"
+            break;
+
+        case shapesArray[1]:
+            heldImage.src = "./images/IBlock.png"
+            break;
+
+        case shapesArray[2]:
+            heldImage.src = "./images/JBlock.png"
+            break;
+
+        case shapesArray[3]:
+            heldImage.src = "./images/squareBlock.png"
+            break;
+
+        case shapesArray[4]:
+            heldImage.src = "./images/LBlock.png"
+            break;
+        
+        case shapesArray[5]:
+            heldImage.src = "./images/SBlock.png"
+            break; 
+
+        case shapesArray[6]:
+            heldImage.src = "./images/ZBlock.png"
+            break;
     }
 }
 
@@ -297,7 +340,6 @@ const deleteShape = () => {
 
         context.fillStyle = "black"; 
         context.fillRect(coordX, coordY, 21, 21);
-        
     }
 }
 
@@ -328,10 +370,8 @@ const getLastSquareX = () => {
         }
         
     }
-
     return lastX; 
 }
-
 
 const rotateShape = () => {
     const newShape = new Array(); 
@@ -365,7 +405,6 @@ const checkAndClearRows = () => {
     let rowsToClear = 0;
     let startOfClearing = 0; 
     for (let index = 0; index < gameBoardArrayHeight; index++) {
-
         let isRowFull = true; 
 
         for (let i = 0; i < gameBoardArrayWidth; i++) {
@@ -373,8 +412,7 @@ const checkAndClearRows = () => {
             if (square === 0 || (typeof square === 'undefined')){
                 isRowFull = false; 
                 break
-            }
-            
+            }  
         }
 
         if(isRowFull){
@@ -431,10 +469,8 @@ const moveRowsDown = (rowsToClear, startOfClearing) => {
                 context.fillRect(coordX, coordY, 21 , 21)
             }
         }
-        
     }
 }
-
 
 const updateLevel = (score) => {
     if(score <= 500){
@@ -492,24 +528,14 @@ const updateLevel = (score) => {
         pageLevel.innerHTML = "9"
      
     }
-           
-    
-
-
 }
 
 const setDifficulty = (level) => {
     clearInterval(difficultyInterval)
-    difficultyInterval = setInterval(() => {if(isGameOver != "Game Over"){MoveTetrominoDown();}}, (2000 - (level * 180)));
+    difficultyInterval = setInterval(() => {if(isGameOver != "Game Over"){MoveTetrominoDown();}}, (2000 - (level * 190)));
     
 }
 
-
- 
-
-
-
 resetButton.addEventListener('click', handleButtonPress)
 document.addEventListener('keydown', handleKeyPress);
-
 document.addEventListener('DOMContentLoaded', setupCanvas)

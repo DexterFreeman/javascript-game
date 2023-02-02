@@ -49,6 +49,9 @@ button:active {
   grid-row-end: 2;
 }
 .game__section .game__hold {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   height: 250px;
   border-bottom-left-radius: 35px;
   min-width: 100%;
@@ -59,6 +62,11 @@ button:active {
   background-color: white;
   color: black;
   text-align: left;
+}
+.game__section .game__hold .game__hold-image {
+  margin-left: 5%;
+  margin-bottom: 40%;
+  width: 150px;
 }
 .game__section .game__highscores {
   display: none;
