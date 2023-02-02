@@ -170,8 +170,8 @@ const isCollidingDown = (shape, shapeXCoordinate, shapeYCoordinate) => {
 const updateScores = (score) => {
     highScores.innerHTML = "<h1>Highscores:</h1>";
     allScores.push(score);
-    allScores.reverse();
-    allScores.sort();
+    allScores.sort((a,b) => a-b);
+    allScores.reverse(); 
     allScores.forEach(element => {
         highScores.innerHTML += `<p>${element}</p>`
     });
