@@ -1,0 +1,100 @@
+trackShape:
+
+Holds a copy of currentShape's default alignment before it is rotated,
+so that in renderHeldShape, it matches the corresponding shape in the shapesArray
+as when it is rotated, currentShape's values switch according to the rotation meaning
+it would no longer match. 
+
+isBlockPlaced: 
+
+A boolean value used to track if a block has been placed or not, 
+for the trackShape value. So that if a block has been placed - meaning currentBlock will
+have changed, a new trackShape can be generated for the new currentShape. 
+
+canSwitch:
+
+A boolean value used to track whether the user can switch block or not,
+this is to prevent the user from constantly switching between the two
+same blocks
+
+heldShape:
+
+An array of the current held shape. It initialsed at blank as at the start
+of the game, the user isn't holding any shape. 
+
+canvas: 
+
+The variable which contains the canvas element. 
+
+context:
+
+The 2d context of the canvas, used draw the squares, whole canvas, the grid
+etc. 
+
+gameBoardArrayHeight:
+
+The height of the game board grid. Value: 20
+
+gameBoardArrayWidth:
+
+The width of the game board grid. Value: 12
+
+currentShapeX:
+
+The current shape's X coordinate. Used to move the current shape around
+according to user input/rotation
+
+currentShapeY: 
+
+The current shapes Y coordinate. Also modified according to user input, 
+rotation etc.
+
+score:
+
+The current score of the current game. 
+
+level:
+
+The level of the game. Increments by one for every 1000 score. Used to increase
+the interval at which the current block will fall. 
+
+coordinateArray:
+
+Array used to represent the pixel coordinates for the canvas and splits into
+a 20x12 grid. Used to draw squares into the correct position of the canvas. 
+
+currentShape: 
+
+The current tetris shape, represented by an array which contains the positioning of the squares. Then uses it's X and Y coordinates
+to know it's current position in conjunction with the coordinateArray.
+
+winOrLose:
+
+A string value to track the current game state. It is either: "Playing", meaning the user has not lost or won. "Game Over": meaning
+the user has lost the game. "Winner" meaning the user has won - occurs once the level is level 10. 
+
+difficultyInterval: 
+
+The interval to move the shape down at set amount of times, scales according to the level, the higher the level the quicker the blocks
+move down.
+
+possibleDirections: 
+
+An object containing all of the possible directions a piece can move by, as well as an idle key. 
+
+currentShapeDirection:
+
+What the current direction of the current shape is, used to check for collisions and tracking where the shape will go. 
+
+shapesArray:
+
+The default positions for each possible shape in the game. Doesn't include rotated versions of any pieces. Used to randomly select
+one of the indexs when creating a new shape. 
+
+shapeColours:
+
+The colours of each the shapes, the indexs of this array and the shapesArray match to their corresponding shape/colour. 
+
+
+
+ 

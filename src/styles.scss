@@ -36,12 +36,11 @@ button:active{
 
 .game__section{
     display: grid;
-    grid-template-columns: 18% 62% 20%;
+    grid-template-columns: 220px 562px;
     grid-template-rows: 70% 30%;
     margin: 0;
     canvas{
-        
-        min-width: 600px;
+        max-width: 560px;
         border: 2px white solid;
         grid-column-start:2;
         grid-column-end: 2;
@@ -98,6 +97,7 @@ button:active{
 
 @media screen and (min-width: 1000px) {
     .game__section{
+        grid-template-columns: 220px 562px 220px;
         .game__highscores{
             display: inline;
         }

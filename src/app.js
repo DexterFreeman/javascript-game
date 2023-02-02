@@ -4,7 +4,10 @@ const pageScore = document.querySelector("#score");
 const pageLevel = document.querySelector("#level");
 const heldShapeRender = document.querySelector(".game__hold");
 const heldImage = document.querySelector(".game__hold-image");
+const highScores = document.querySelector(".game__highscores")
 
+
+let allScores = []
 let trackShape; 
 let isBlockPlaced = false; 
 let canSwitch = true; 
@@ -19,8 +22,8 @@ let score = 0;
 let level = 1; 
 let coordinateArray = [...Array(gameBoardArrayHeight)].map(e => Array(gameBoardArrayWidth).fill(0))
 let currentShape = [[1,0], [0, 1], [1,1], [2, 1]]
-let isGameOver = false; 
-let difficultyInterval = setInterval(() => {if(isGameOver != "Game Over"){MoveTetrominoDown();}}, (2000 - (level * 150)));
+let winOrLose = "Playing"
+let difficultyInterval = setInterval(() => {moveShapeDown();}, (2000 - (level * 190)));
 
 //Object to track the current direction the block is moving
 const possibleDirections = {
@@ -30,7 +33,7 @@ const possibleDirections = {
     right: 3, 
 }
 
-let currentDirection = possibleDirections.idle;
+let currentShapeDirection = possibleDirections.idle;
 
 //Initialise variable
 const shapesArray = [
@@ -80,16 +83,13 @@ const setupCanvas = () => {
     for (let i = 0; i < gameBoardArrayHeight+1; i++) {
         context.strokeRect(10,i*23+7.5, 276, 1);
     }
-    startGame(); 
-}
-
-const startGame = () => {
     //Deletes shape so if it's a restart, it deleted any current shape
     deleteShape(); 
     createShape();
     setupCoordinateArray(); 
-    drawShape(); 
+    drawCurrentShape(); 
 }
+
 
 const createShape = () => {
     let randomSelector = Math.floor(Math.random() * shapesArray.length);
@@ -111,7 +111,7 @@ const setupCoordinateArray = () => {
     }
 }
 
-const drawShape = () => {
+const drawCurrentShape = () => {
     for (let index = 0; index < currentShape.length; index++) {
         
         let x = currentShape[index][0] + currentShapeX;
@@ -133,10 +133,10 @@ const isCollidingWall = (shape, shapeXCoordinate, shapeYCoordinate) => {
         //Checks X position for each square in the current shape
         let newShapeX = shape[index][0] + shapeXCoordinate;
         let newShapeY = shape[index][1] + shapeYCoordinate; 
-        if((newShapeX <= 0 || typeof(stoppedShapeArray[newShapeX-1][newShapeY]) === 'string')&& currentDirection === possibleDirections.left){
+        if((newShapeX <= 0 || typeof(stoppedShapeArray[newShapeX-1][newShapeY]) === 'string')&& currentShapeDirection === possibleDirections.left){
 
             return true;
-        } else if((newShapeX >= 11 || typeof(stoppedShapeArray[newShapeX+1][newShapeY]) === 'string') && currentDirection === possibleDirections.right){
+        } else if((newShapeX >= 11 || typeof(stoppedShapeArray[newShapeX+1][newShapeY]) === 'string') && currentShapeDirection === possibleDirections.right){
             return true;
         }  
     }
@@ -152,7 +152,7 @@ const isCollidingDown = (shape, shapeXCoordinate, shapeYCoordinate) => {
         let newShapeX = square[0] + shapeXCoordinate; 
         let newShapeY = square[1] + shapeYCoordinate; 
 
-        if(currentDirection === directions.down){
+        if(currentShapeDirection === directions.down){
             newShapeY++; 
         }
         if(typeof stoppedShapeArray[newShapeX][newShapeY] === 'string'){
@@ -167,6 +167,15 @@ const isCollidingDown = (shape, shapeXCoordinate, shapeYCoordinate) => {
     return false;
 }
 
+const updateScores = (score) => {
+    highScores.innerHTML = "";
+    allScores.push(score);
+    allScores.sort();
+    allScores.forEach(element => {
+        highScores.innerHTML += `<p>${element}</p>`
+    });
+}
+
 const handleCollisionDown = (shapeXCoordinate, shapeYCoordinate, newShape) => {
     //Has the user lost?
     canSwitch = true; 
@@ -175,6 +184,8 @@ const handleCollisionDown = (shapeXCoordinate, shapeYCoordinate, newShape) => {
     if(hasUserLost(shapeYCoordinate)){
         winOrLose = "Game Over";
         alert("Game over")
+        
+        updateScores(score); 
         handleButtonPress();
     }
     //If not, stop draw the shape, and continue playing.
@@ -188,10 +199,10 @@ const handleCollisionDown = (shapeXCoordinate, shapeYCoordinate, newShape) => {
             }
         checkAndClearRows();
         createShape(); 
-        currentDirection = directions.idle; 
+        currentShapeDirection = directions.idle; 
         currentShapeX = 4;
         currentShapeY = 0; 
-        drawShape(); 
+        drawCurrentShape(); 
     }
 }
 
@@ -202,13 +213,13 @@ const hasUserLost = (yCoordinate) => {
     return false; 
 }
 
-const MoveTetrominoDown = () => {
-    currentDirection = directions.down;
+const moveShapeDown = () => {
+    currentShapeDirection = directions.down;
     //Check for a vertical collision, either with floor or the wall
     if(!isCollidingDown(currentShape, currentShapeX, currentShapeY)){
         deleteShape();
         currentShapeY++;
-        drawShape();
+        drawCurrentShape();
     }
     else{
         handleCollisionDown(currentShapeX, currentShapeY, currentShape); 
@@ -218,14 +229,14 @@ const MoveTetrominoDown = () => {
 
 const handleKeyPress = (event) => {
     if(event.keyCode == 16 && event.repeat){return;}
-    if(!isGameOver){
+    if(winOrLose != "Game Over"){
         switch(event.keyCode){
             case 37:
-                currentDirection = possibleDirections.left;
+                currentShapeDirection = possibleDirections.left;
                 if(!isCollidingWall(currentShape, currentShapeX, currentShapeY)){
                     deleteShape(); 
                     currentShapeX--;
-                    drawShape(); 
+                    drawCurrentShape(); 
                 }
                 //Move left
                 //Can you move left? 
@@ -233,16 +244,16 @@ const handleKeyPress = (event) => {
                 break;
             case 39:
               
-                currentDirection = possibleDirections.right;
+                currentShapeDirection = possibleDirections.right;
                 if(!isCollidingWall(currentShape, currentShapeX, currentShapeY)){
                     deleteShape();
                     currentShapeX++;
-                    drawShape(); 
+                    drawCurrentShape(); 
                 }
                 //Move right
                 break;
             case 40:
-                MoveTetrominoDown();
+                moveShapeDown();
                 //Move down
                 break;
             case 38:
@@ -269,7 +280,7 @@ const holdShape = () => {
             currentShapeX = 4;
             currentShapeY = 0; 
             createShape();
-            drawShape(); 
+            drawCurrentShape(); 
         }
         else{
 
@@ -281,7 +292,7 @@ const holdShape = () => {
             currentShapeColour = shapeColours[shapesArray.indexOf(currentShape)]
             currentShapeX = 4;
             currentShapeY = 0; 
-            drawShape(); 
+            drawCurrentShape(); 
             
         }
         canSwitch = false; 
@@ -298,22 +309,18 @@ const renderHeldShape = (shapeToRender) => {
 
         case 1:
             heldImage.src = "./images/IBlock.png"
-  
             break;
 
         case 2:
             heldImage.src = "./images/JBlock.png"
-         
             break;
 
         case 3:
             heldImage.src = "./images/squareBlock.png"
-          
             break;
 
         case 4:
             heldImage.src = "./images/LBlock.png"
-     
             break;
         
         case 5:
@@ -322,11 +329,10 @@ const renderHeldShape = (shapeToRender) => {
 
         case 6:
             heldImage.src = "./images/ZBlock.png"
-   
             break;
 
         default: 
-           alert("This should never happen! Piece not recognised")
+           alert("Error: Piece to hold not recognised")
             
     }
 }
@@ -354,15 +360,16 @@ const handleButtonPress = () => {
     setDifficulty(level)
     pageScore.innerHTML = "0"
     pageLevel.innerHTML = "1"
+    heldImage.src = ""
+    heldShape = ""
     deleteShape(); 
+    winOrLose = "Playing"
     currentShapeX = 4; 
     currentShapeY = 0; 
     //Reset arrays and current shape
     gameBoardArray = [...Array(gameBoardArrayHeight)].map(e => Array(gameBoardArrayWidth).fill(0))
-    coordinateArray = [...Array(gameBoardArrayHeight)].map(e => Array(gameBoardArrayWidth).fill(0))
     stoppedShapeArray = [...Array(20)].map(e => Array(12).fill(0));
     setupCanvas();
-    startGame(); 
 }
 
 const getLastSquareX = () => {
@@ -404,13 +411,13 @@ const rotateShape = () => {
         deleteShape(); 
         try{
             currentShape = newShape; 
-            drawShape(); 
+            drawCurrentShape(); 
         }
         catch (exception){
             if (exception instanceof TypeError){
                 currentShape = currentShapeBackup; 
                 deleteShape(); 
-                drawShape(); 
+                drawCurrentShape(); 
             }
         }
     }
@@ -548,7 +555,7 @@ const updateLevel = (score) => {
 
 const setDifficulty = (level) => {
     clearInterval(difficultyInterval)
-    difficultyInterval = setInterval(() => {if(isGameOver != "Game Over"){MoveTetrominoDown();}}, (2000 - (level * 190)));
+    difficultyInterval = setInterval(() => {if(winOrLose != "Game Over"){moveShapeDown();}}, (2000 - (level * 190)));
     
 }
 
