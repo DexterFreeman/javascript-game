@@ -156,11 +156,11 @@ const isCollidingDown = (shape, shapeXCoordinate, shapeYCoordinate) => {
             newShapeY++; 
         }
         if(typeof stoppedShapeArray[newShapeX][newShapeY] === 'string'){
-            handleCollisionDown(currentShapeX, currentShapeY, shapeCopy); 
+           
             return true; 
         }
         else if (newShapeY >= 20){
-            handleCollisionDown(currentShapeX, currentShapeY, shapeCopy); 
+            
             return true; 
         }    
     }
@@ -209,6 +209,9 @@ const MoveTetrominoDown = () => {
         deleteShape();
         currentShapeY++;
         drawShape();
+    }
+    else{
+        handleCollisionDown(currentShapeX, currentShapeY, currentShape); 
     }
 }
 
@@ -269,13 +272,12 @@ const holdShape = () => {
             drawShape(); 
         }
         else{
-            console.log("RENDERING:" + trackShape)
+
             renderHeldShape(trackShape); 
             deleteShape(); 
             let tempShape = trackShape;
             currentShape = heldShape;
             heldShape = tempShape;
-            console.log("After Swap: Current shape: " + currentShape + "Held shape: " + heldShape)
             currentShapeColour = shapeColours[shapesArray.indexOf(currentShape)]
             currentShapeX = 4;
             currentShapeY = 0; 
@@ -289,32 +291,29 @@ const holdShape = () => {
 
 
 const renderHeldShape = (shapeToRender) => {
-    console.log("Rendering...")
-    console.log(shapesArray.indexOf(shapeToRender))
     switch(shapesArray.indexOf(shapeToRender)){
         case 0:
             heldImage.src = "./images/TBlock.png"
-            console.log("T")
             break;
 
         case 1:
             heldImage.src = "./images/IBlock.png"
-            console.log("I")
+  
             break;
 
         case 2:
             heldImage.src = "./images/JBlock.png"
-            console.log("J")
+         
             break;
 
         case 3:
             heldImage.src = "./images/squareBlock.png"
-            console.log("Square")
+          
             break;
 
         case 4:
             heldImage.src = "./images/LBlock.png"
-            console.log("L")
+     
             break;
         
         case 5:
@@ -323,7 +322,7 @@ const renderHeldShape = (shapeToRender) => {
 
         case 6:
             heldImage.src = "./images/ZBlock.png"
-            console.log("Z")
+   
             break;
 
         default: 
@@ -382,7 +381,6 @@ const getLastSquareX = () => {
 const rotateShape = () => {
     if(isBlockPlaced == false){
         trackShape = currentShape
-        console.log(trackShape);
         isBlockPlaced = true; 
     }
     const newShape = new Array(); 
@@ -398,19 +396,26 @@ const rotateShape = () => {
         const newShapeY = currentSquareX; 
         newShape.push([newShapeX, newShapeY]);
     }
-    deleteShape(); 
-    try{
-        currentShape = newShape; 
-        drawShape(); 
+    
+    if(isCollidingDown(newShape, currentShapeX, currentShapeY) || isCollidingWall(newShape, currentShapeX, currentShapeY)){
+        
     }
-    catch (exception){
-        if (exception instanceof TypeError){
-            currentShape = currentShapeBackup; 
-            deleteShape(); 
+    else{
+        deleteShape(); 
+        try{
+            currentShape = newShape; 
             drawShape(); 
         }
+        catch (exception){
+            if (exception instanceof TypeError){
+                currentShape = currentShapeBackup; 
+                deleteShape(); 
+                drawShape(); 
+            }
+        }
     }
-}
+    }
+    
 
 const checkAndClearRows = () => {
     let rowsToClear = 0;
