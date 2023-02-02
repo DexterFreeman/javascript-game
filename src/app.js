@@ -4,6 +4,10 @@ const pageScore = document.querySelector("#score");
 const pageLevel = document.querySelector("#level");
 const heldShapeRender = document.querySelector(".game__hold");
 const heldImage = document.querySelector(".game__hold-image");
+
+let trackShape; 
+let isBlockPlaced = false; 
+let canSwitch = true; 
 let heldShape = ""; 
 let canvas;
 let context; 
@@ -17,6 +21,7 @@ let coordinateArray = [...Array(gameBoardArrayHeight)].map(e => Array(gameBoardA
 let currentShape = [[1,0], [0, 1], [1,1], [2, 1]]
 let isGameOver = false; 
 let difficultyInterval = setInterval(() => {if(isGameOver != "Game Over"){MoveTetrominoDown();}}, (2000 - (level * 150)));
+
 //Object to track the current direction the block is moving
 const possibleDirections = {
     idle: 0, 
@@ -38,21 +43,16 @@ const shapesArray = [
     [[0,0], [1,0], [1,1], [2,1]] 
 ];
 
-
 //Put in order of corresponding colour to the index of the shapes array, so each shape belongs to the same index of it's mathcing colour. 
 let shapeColours = ["purple","cyan","orange", "yellow", "blue", "green", "red" ]
-
-
 let currentShapeColour; 
 let stoppedShapeArray = [...Array(20)].map(e => Array(12).fill(0));
- 
 let gameBoardArray = [...Array(gameBoardArrayHeight)].map(e => Array(gameBoardArrayWidth).fill(0))
 let directions = {
     idle: 0,
     down: 1, 
     left: 2, 
     right: 3, 
-
 };
 let direction; 
 
@@ -65,8 +65,6 @@ class Coordinates {
     }
 }
 
-
-
 const setupCanvas = () => {
     canvas = document.getElementById("game-canvas");
     context = canvas.getContext('2d');
@@ -77,18 +75,13 @@ const setupCanvas = () => {
     context.fillRect(0,0, canvas.width, canvas.height);
     context.strokeStyle = "#181819";
     for (let index = 0; index < gameBoardArrayWidth+1; index++) {
-        context.strokeRect(index*23+9.5,8, 1, 459);
-        
+        context.strokeRect(index*23+9.5,8, 1, 459);   
     }
-   
     for (let i = 0; i < gameBoardArrayHeight+1; i++) {
-        
         context.strokeRect(10,i*23+7.5, 276, 1);
-        
     }
     startGame(); 
 }
-
 
 const startGame = () => {
     //Deletes shape so if it's a restart, it deleted any current shape
@@ -98,13 +91,11 @@ const startGame = () => {
     drawShape(); 
 }
 
-
 const createShape = () => {
     let randomSelector = Math.floor(Math.random() * shapesArray.length);
     currentShape = shapesArray[randomSelector];
     currentShapeColour = shapeColours[randomSelector];
 }
-
 
 const setupCoordinateArray = () => {
     let i = 0, j = 0;
@@ -178,6 +169,9 @@ const isCollidingDown = (shape, shapeXCoordinate, shapeYCoordinate) => {
 
 const handleCollisionDown = (shapeXCoordinate, shapeYCoordinate, newShape) => {
     //Has the user lost?
+    canSwitch = true; 
+    trackShape = "";
+    isBlockPlaced = false; 
     if(hasUserLost(shapeYCoordinate)){
         winOrLose = "Game Over";
         alert("Game over")
@@ -210,7 +204,6 @@ const hasUserLost = (yCoordinate) => {
 
 const MoveTetrominoDown = () => {
     currentDirection = directions.down;
- 
     //Check for a vertical collision, either with floor or the wall
     if(!isCollidingDown(currentShape, currentShapeX, currentShapeY)){
         deleteShape();
@@ -224,7 +217,6 @@ const handleKeyPress = (event) => {
     if(event.keyCode == 16 && event.repeat){return;}
     if(!isGameOver){
         switch(event.keyCode){
-
             case 37:
                 currentDirection = possibleDirections.left;
                 if(!isCollidingWall(currentShape, currentShapeX, currentShapeY)){
@@ -232,12 +224,10 @@ const handleKeyPress = (event) => {
                     currentShapeX--;
                     drawShape(); 
                 }
-              
                 //Move left
                 //Can you move left? 
                 //If yes then move the current shape, delete old position and redraw
                 break;
-
             case 39:
               
                 currentDirection = possibleDirections.right;
@@ -248,81 +238,97 @@ const handleKeyPress = (event) => {
                 }
                 //Move right
                 break;
-
-
             case 40:
-            
                 MoveTetrominoDown();
                 //Move down
                 break;
-
             case 38:
-               
                 rotateShape(); 
                 break;
-
-
             case 16: 
                 holdShape(currentShape); 
-               
+                break; 
         }
     }
 }
 
-
 const holdShape = () => {
-    if(heldShape == ""){
-        heldShape = currentShape;
-        renderHeldShape(heldShape); 
-        deleteShape();
-        currentShapeX = 4;
-        currentShapeY = 0; 
-        createShape();
-        drawShape(); 
+    if (trackShape == undefined || trackShape == ""){
+        trackShape = currentShape; 
     }
-    else{
-        deleteShape(); 
-        let tempShape = heldShape
-        heldShape = currentShape;
-        currentShape = tempShape;
-        renderHeldShape(heldShape); 
-        currentShapeColour = shapeColours[shapesArray.indexOf(currentShape)]
-        currentShapeX = 4;
-        currentShapeY = 0; 
-        drawShape(); 
+    if (canSwitch){
+        if(heldShape == ""){
+            heldShape = trackShape;
+            renderHeldShape(heldShape); 
+            deleteShape();
+            currentShape = ""
+            trackShape = ""
+            currentShapeX = 4;
+            currentShapeY = 0; 
+            createShape();
+            drawShape(); 
+        }
+        else{
+            console.log("RENDERING:" + trackShape)
+            renderHeldShape(trackShape); 
+            deleteShape(); 
+            let tempShape = trackShape;
+            currentShape = heldShape;
+            heldShape = tempShape;
+            console.log("After Swap: Current shape: " + currentShape + "Held shape: " + heldShape)
+            currentShapeColour = shapeColours[shapesArray.indexOf(currentShape)]
+            currentShapeX = 4;
+            currentShapeY = 0; 
+            drawShape(); 
+            
+        }
+        canSwitch = false; 
     }
+    
 }
 
 
 const renderHeldShape = (shapeToRender) => {
-    switch(shapeToRender){
-        case shapesArray[0]:
+    console.log("Rendering...")
+    console.log(shapesArray.indexOf(shapeToRender))
+    switch(shapesArray.indexOf(shapeToRender)){
+        case 0:
             heldImage.src = "./images/TBlock.png"
+            console.log("T")
             break;
 
-        case shapesArray[1]:
+        case 1:
             heldImage.src = "./images/IBlock.png"
+            console.log("I")
             break;
 
-        case shapesArray[2]:
+        case 2:
             heldImage.src = "./images/JBlock.png"
+            console.log("J")
             break;
 
-        case shapesArray[3]:
+        case 3:
             heldImage.src = "./images/squareBlock.png"
+            console.log("Square")
             break;
 
-        case shapesArray[4]:
+        case 4:
             heldImage.src = "./images/LBlock.png"
+            console.log("L")
             break;
         
-        case shapesArray[5]:
+        case 5:
             heldImage.src = "./images/SBlock.png"
             break; 
 
-        case shapesArray[6]:
+        case 6:
             heldImage.src = "./images/ZBlock.png"
+            console.log("Z")
             break;
+
+        default: 
+           alert("This should never happen! Piece not recognised")
+            
     }
 }
 
@@ -374,6 +380,11 @@ const getLastSquareX = () => {
 }
 
 const rotateShape = () => {
+    if(isBlockPlaced == false){
+        trackShape = currentShape
+        console.log(trackShape);
+        isBlockPlaced = true; 
+    }
     const newShape = new Array(); 
     //Shallow copy
     const shapeCopy = currentShape; 
