@@ -226,7 +226,7 @@ const handleCollisionDown = (shapeXCoordinate, shapeYCoordinate, newShape) => {
   canSwitch = true;
   trackShape = "";
   isBlockPlaced = false;
-  if (hasUserLost(shapeYCoordinate)) {
+  if(shapeYCoordinate <= 2) {
     winOrLose = "Game Over";
     alert("Game over");
 
@@ -249,13 +249,6 @@ const handleCollisionDown = (shapeXCoordinate, shapeYCoordinate, newShape) => {
     currentShapeY = 0;
     drawCurrentShape();
   }
-};
-
-const hasUserLost = (yCoordinate) => {
-  if (yCoordinate <= 2) {
-    return true;
-  }
-  return false;
 };
 
 const moveShapeDown = () => {
