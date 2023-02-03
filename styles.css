@@ -1,13 +1,15 @@
 * {
   padding: 0;
   margin: 0;
-  background-color: rgb(88, 88, 88);
   color: white;
   font-family: "Courier New", Courier, monospace;
   font-size: 32px;
 }
 
 body {
+  background-image: url("./images/background-image.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover;
   height: 100vh;
   width: 100%;
   display: flex;
@@ -19,19 +21,21 @@ body {
 
 button {
   font-size: 20px;
-  height: 50px;
-  width: 150px;
+  height: 120px;
+  width: 300px;
+  font-size: 40px;
   border-radius: 10px;
-  background-color: white;
-  color: black;
+  border-color: white;
+  background-color: black;
+  color: white;
 }
 
 button:hover {
-  background-color: rgb(233, 233, 233);
+  background-color: rgb(43, 43, 43);
 }
 
 button:active {
-  background-color: rgb(247, 247, 247);
+  background-color: rgb(71, 71, 71);
 }
 
 .game__section {
@@ -90,6 +94,12 @@ button:active {
   grid-column-end: 1;
   grid-row-start: 2;
   grid-row-end: 2;
+}
+.game__section .game__information h2 {
+  font-size: 40px;
+}
+.game__section .game__information h2 span {
+  font-size: 40px;
 }
 
 @media screen and (min-width: 1000px) {

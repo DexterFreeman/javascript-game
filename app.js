@@ -68,7 +68,7 @@ class Coordinates {
     }
 }
 
-const setupCanvas = () => {
+const startGame = () => {
     canvas = document.getElementById("game-canvas");
     context = canvas.getContext('2d');
     canvas.width = 592;
@@ -83,8 +83,7 @@ const setupCanvas = () => {
     for (let i = 0; i < gameBoardArrayHeight+1; i++) {
         context.strokeRect(10,i*23+7.5, 276, 1);
     }
-    //Deletes shape so if it's a restart, it deleted any current shape
-    deleteShape(); 
+
     createShape();
     setupCoordinateArray(); 
     drawCurrentShape(); 
@@ -98,16 +97,16 @@ const createShape = () => {
 }
 
 const setupCoordinateArray = () => {
-    let i = 0, j = 0;
+    let heightIndex = 0, widthIndex = 0;
     for(let y = 9; y <= 446; y += 23){
         // 12 * 23 = 276 - 12 = 264 Max X value
         for(let x = 11; x <= 264; x += 23){
-            coordinateArray[i][j] = new Coordinates(x,y);
-            i++;
+            coordinateArray[heightIndex][widthIndex] = new Coordinates(x,y);
+            heightIndex++;
           
         }
-        j++;
-        i = 0;
+        widthIndex++;
+        heightIndex = 0;
     }
 }
 
@@ -187,7 +186,7 @@ const handleCollisionDown = (shapeXCoordinate, shapeYCoordinate, newShape) => {
         alert("Game over")
         
         updateScores(score); 
-        handleButtonPress();
+        resetGame();
     }
     //If not, stop draw the shape, and continue playing.
     else {
@@ -218,7 +217,7 @@ const moveShapeDown = () => {
     currentShapeDirection = directions.down;
     //Check for a vertical collision, either with floor or the wall
     if(!isCollidingDown(currentShape, currentShapeX, currentShapeY)){
-        deleteShape();
+        deleteCurrentShape();
         currentShapeY++;
         drawCurrentShape();
     }
@@ -229,13 +228,14 @@ const moveShapeDown = () => {
 
 
 const handleKeyPress = (event) => {
+    //Prevents swap shape to be spammed. 
     if(event.keyCode == 16 && event.repeat){return;}
     if(winOrLose != "Game Over"){
         switch(event.keyCode){
             case 37:
                 currentShapeDirection = possibleDirections.left;
                 if(!isCollidingWall(currentShape, currentShapeX, currentShapeY)){
-                    deleteShape(); 
+                    deleteCurrentShape(); 
                     currentShapeX--;
                     drawCurrentShape(); 
                 }
@@ -247,7 +247,7 @@ const handleKeyPress = (event) => {
               
                 currentShapeDirection = possibleDirections.right;
                 if(!isCollidingWall(currentShape, currentShapeX, currentShapeY)){
-                    deleteShape();
+                    deleteCurrentShape();
                     currentShapeX++;
                     drawCurrentShape(); 
                 }
@@ -275,7 +275,7 @@ const holdShape = () => {
         if(heldShape == ""){
             heldShape = trackShape;
             renderHeldShape(heldShape); 
-            deleteShape();
+            deleteCurrentShape();
             currentShape = ""
             trackShape = ""
             currentShapeX = 4;
@@ -284,9 +284,8 @@ const holdShape = () => {
             drawCurrentShape(); 
         }
         else{
-
             renderHeldShape(trackShape); 
-            deleteShape(); 
+            deleteCurrentShape(); 
             let tempShape = trackShape;
             currentShape = heldShape;
             heldShape = tempShape;
@@ -338,7 +337,7 @@ const renderHeldShape = (shapeToRender) => {
     }
 }
 
-const deleteShape = () => {
+const deleteCurrentShape = () => {
     //Fills current shape with gray to remove it from the canvas. 
     for (let index = 0; index < currentShape.length; index++) {
         
@@ -355,7 +354,7 @@ const deleteShape = () => {
     }
 }
 
-const handleButtonPress = () => {
+const resetGame = () => {
     score = 0;
     level = 1; 
     setDifficulty(level)
@@ -363,14 +362,14 @@ const handleButtonPress = () => {
     pageLevel.innerHTML = "1"
     heldImage.src = ""
     heldShape = ""
-    deleteShape(); 
+    deleteCurrentShape(); 
     winOrLose = "Playing"
     currentShapeX = 4; 
     currentShapeY = 0; 
     //Reset arrays and current shape
     gameBoardArray = [...Array(gameBoardArrayHeight)].map(e => Array(gameBoardArrayWidth).fill(0))
     stoppedShapeArray = [...Array(20)].map(e => Array(12).fill(0));
-    setupCanvas();
+    startGame();
 }
 
 const getLastSquareX = () => {
@@ -392,9 +391,7 @@ const rotateShape = () => {
         isBlockPlaced = true; 
     }
     const newShape = new Array(); 
-    //Shallow copy
     const shapeCopy = currentShape; 
-    //Deep copy
     const currentShapeBackup = [...currentShape]; 
 
     for (let index = 0; index < shapeCopy.length; index++) {
@@ -409,7 +406,8 @@ const rotateShape = () => {
         
     }
     else{
-        deleteShape(); 
+        deleteCurrentShape(); 
+        //Error occurs if you try to rotate out of the array bounds. I.E outside the game walls. 
         try{
             currentShape = newShape; 
             drawCurrentShape(); 
@@ -417,12 +415,12 @@ const rotateShape = () => {
         catch (exception){
             if (exception instanceof TypeError){
                 currentShape = currentShapeBackup; 
-                deleteShape(); 
+                deleteCurrentShape(); 
                 drawCurrentShape(); 
             }
         }
     }
-    }
+}
     
 
 const checkAndClearRows = () => {
@@ -552,6 +550,12 @@ const updateLevel = (score) => {
         pageLevel.innerHTML = "9"
      
     }
+    else if (score <= 5000){ 
+        level = 10; 
+        setDifficulty(level); 
+        pageLevel.innerHTML = "10"
+     
+    }
 }
 
 const setDifficulty = (level) => {
@@ -560,6 +564,6 @@ const setDifficulty = (level) => {
     
 }
 
-resetButton.addEventListener('click', handleButtonPress)
+resetButton.addEventListener('click', resetGame)
 document.addEventListener('keydown', handleKeyPress);
-document.addEventListener('DOMContentLoaded', setupCanvas)
+document.addEventListener('DOMContentLoaded', startGame)
